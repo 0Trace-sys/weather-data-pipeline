@@ -1,4 +1,9 @@
+import os
 import psycopg
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 
 def load_weather(records):
@@ -6,9 +11,10 @@ def load_weather(records):
 
     # Connect to the local PostgreSQL database
     with psycopg.connect(
-        dbname="weather_pipeline",
-        user="Cadmin",
-        host="localhost"
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT")
     ) as conn:
 
         # Create a database cursor
