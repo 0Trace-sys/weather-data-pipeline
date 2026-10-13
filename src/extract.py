@@ -1,42 +1,87 @@
+import logging
+import sys
 import requests
+
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
 from transform import transform_weather
 from load import load_weather
-# Open-Meteo API endpoint
-url = "https://api.open-meteo.com/v1/forecast"
 
-# Location and weather measurements
-params = {
-    "latitude": 33.9137,
-    "longitude": -98.4934,
-    "hourly": "temperature_2m",
-    "temperature_unit": "fahrenheit",
-    "timezone": "GMT"
-}
 
-# Request weather data from the API
-response = requests.get(url, params=params, timeout=10)
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
-# Raise an error if the request failed
-response.raise_for_status()
 
-# Convert JSON into a Python dictionary
-weather_data = response.json()
+def main():
+    logging.info("Starting weather data pipeline")
 
-# Print the first five observations
-print("First five timestamps:")
-print(weather_data["hourly"]["time"][:5])
+    try:
+        # Open-Meteo API endpoint
+        url = "https://api.open-meteo.com/v1/forecast"
 
-print("First five temperatures:")
-print(weather_data["hourly"]["temperature_2m"][:5])
+        # Location and weather measurements
+        params = {
+            "latitude": 33.9137,
+            "longitude": -98.4934,
+            "hourly": "temperature_2m",
+            "temperature_unit": "fahrenheit",
+            "timezone": "GMT"
+        }
 
-# Transform the extracted weather data
-clean_records = transform_weather(weather_data)
+        # Configure automatic retries
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["GET"]
+        )
 
-print("\nFirst five transformed records:")
+        adapter = HTTPAdapter(max_retries=retry_strategy)
 
-for record in clean_records[:5]:
-    print(record)
+        # Extract weather data
+        with requests.Session() as session:
+            session.mount("https://", adapter)
 
-# Load the transformed weather data into the database
-inserted_count = load_weather(clean_records)
-print(f"\nInserted {inserted_count} new records into the database.")
+            response = session.get(
+                url,
+                params=params,
+                timeout=10
+            )
+
+            response.raise_for_status()
+            weather_data = response.json()
+
+        logging.info(
+            "Extracted %d weather records from Open-Meteo",
+            len(weather_data["hourly"]["time"])
+        )
+
+        # Transform weather data
+        clean_records = transform_weather(weather_data)
+
+        logging.info(
+            "Successfully transformed %d weather records",
+            len(clean_records)
+        )
+
+        # Load weather data into PostgreSQL
+        inserted_count = load_weather(clean_records)
+
+        logging.info(
+            "Inserted %d new records into PostgreSQL",
+            inserted_count
+        )
+
+        logging.info("Weather data pipeline completed successfully")
+
+    except Exception:
+        logging.exception("Weather data pipeline failed")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
