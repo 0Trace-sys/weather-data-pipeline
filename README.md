@@ -124,9 +124,11 @@ This displays the forecast record count, temperature statistics, and daily tempe
 
 ### Testing
 
-I added three unit tests using Python's built-in unittest library to check the data transformation process.
+I added seven unit tests using Python's built-in unittest library to check the data transformation process.
 
-The tests cover valid weather records, missing temperatures, and invalid timestamps.
+The tests cover valid weather records, missing temperatures, invalid timestamps, empty forecasts, non-finite temperatures, and mismatched timestamp and temperature counts.
+
+Missing temperatures are skipped when usable records remain. Empty or all-missing forecasts and non-finite temperatures (NaN or infinity) raise an error before loading; the pipeline logs the failure and exits with a nonzero status.
 
 To run the tests:
 
@@ -134,6 +136,6 @@ To run the tests:
 python -m unittest discover -s tests -v
 ```
 
-All three tests passed during development. These tests use sample data and do not require an API connection or a running PostgreSQL database.
+These tests use sample data and do not require an API connection or a running PostgreSQL database.
 
 **Data source:** [Open-Meteo](https://open-meteo.com/)
