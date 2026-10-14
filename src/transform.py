@@ -1,3 +1,4 @@
+import math
 from datetime import datetime, timezone
 
 
@@ -18,11 +19,13 @@ def transform_weather(weather_data):
 
         # Validate the timestamp
         valid_timestamp = datetime.fromisoformat(timestamp).replace(
-    tzinfo=timezone.utc
-)
+            tzinfo=timezone.utc
+        )
 
         # Convert temperature to a number
         temperature = float(temperature)
+        if not math.isfinite(temperature):
+            raise ValueError(f"Temperature must be finite at {timestamp}")
 
         # Build a structured weather record
         record = {
@@ -32,5 +35,8 @@ def transform_weather(weather_data):
         }
 
         records.append(record)
+
+    if not records:
+        raise ValueError("No usable weather records in API response")
 
     return records
