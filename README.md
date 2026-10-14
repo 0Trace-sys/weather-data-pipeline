@@ -116,7 +116,7 @@ This displays the forecast record count, temperature statistics, and daily tempe
 - `src/load.py` — PostgreSQL database loading
 - `sql/schema.sql` — Database schema
 - `sql/analysis.sql` — SQL analysis queries
-- `tests/test_transform.py` — Unit tests for data transformation
+- `tests/tests_transform.py` — Unit tests for data transformation
 - `requirements.txt` — Python dependencies
 - `.env.example` — Database configuration template
 - `.gitignore` — Files excluded from Git
@@ -129,9 +129,9 @@ I added three unit tests using Python's built-in unittest library to check the d
 
 The tests cover valid weather records, missing temperatures, and invalid timestamps.
 
-To run the tests:
-
-    python -m unittest discover -s tests -v
+```bash
+python -m unittest discover -s tests -v
+```
 
 All three tests passed during development. These tests use sample data and do not require an API connection or a running PostgreSQL database.
 
