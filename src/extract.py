@@ -68,12 +68,13 @@ def main():
             len(clean_records)
         )
 
+        
         # Load weather data into PostgreSQL
-        inserted_count = load_weather(clean_records)
+        affected_count = load_weather(clean_records)
 
         logging.info(
-            "Inserted %d new records into PostgreSQL",
-            inserted_count
+            "Inserted or updated %d weather records in PostgreSQL",
+            affected_count
         )
 
         logging.info("Weather data pipeline completed successfully")
@@ -85,3 +86,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
