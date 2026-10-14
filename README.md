@@ -1,5 +1,5 @@
 
-### Weather Data Pipeline
+# Weather Data Pipeline
 
 This is my first project as I begin exploring data engineering and building a portfolio of hands-on work.
 
@@ -122,19 +122,19 @@ This displays the forecast record count, temperature statistics, and daily tempe
 - `.gitignore` — Files excluded from Git
 - `README.md` — Project documentation
 
-
 ### Testing
 
 I added three unit tests using Python's built-in unittest library to check the data transformation process.
 
 The tests cover valid weather records, missing temperatures, and invalid timestamps.
 
+To run the tests:
+
 ```bash
 python -m unittest discover -s tests -v
 ```
 
 All three tests passed during development. These tests use sample data and do not require an API connection or a running PostgreSQL database.
-
 
 ### What I'd Like to Add Later
 
