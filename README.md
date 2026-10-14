@@ -7,7 +7,7 @@ I've worked with Python and SQL through coursework, but I wanted to start applyi
 
 For this project, I built a basic ETL (Extract, Transform, Load) pipeline using Python, PostgreSQL, and the Open-Meteo API.
 
-This is the first of several projects I plan to build as I continue developing my data engineering skills.
+This is the first of several projects I plan to build.
 
 ### Project Overview
 
