@@ -136,10 +136,4 @@ python -m unittest discover -s tests -v
 
 All three tests passed during development. These tests use sample data and do not require an API connection or a running PostgreSQL database.
 
-### What I'd Like to Add Later
-
-This project currently focuses on a single location and temperature measurements. Eventually, I'd like to expand it to multiple cities, include additional weather measurements, and visualize the results.
-
-For now, it serves as a working example of extracting data from an external API, processing it with Python, and storing and analyzing it in PostgreSQL.
-
 **Data source:** [Open-Meteo](https://open-meteo.com/)
